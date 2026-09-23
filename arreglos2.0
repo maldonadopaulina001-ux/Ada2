@@ -1,0 +1,141 @@
+"""
+Gestión de ventas mensuales por departamento
+=============================================
+Estructura: arreglo bidimensional (lista de listas)
+    - Filas    -> Meses (Enero .. Diciembre)
+    - Columnas -> Departamentos (Ropa, Deportes, Juguetería)
+
+Métodos:
+    - insertar_venta(mes, departamento, monto)
+    - buscar_venta(mes, departamento)
+    - eliminar_venta(mes, departamento)
+    - mostrar_tabla()
+"""
+
+MESES = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+DEPARTAMENTOS = ["Ropa", "Deportes", "Jugueteria"]
+
+
+class VentasDepartamentos:
+    def __init__(self):
+        # Arreglo bidimensional: filas = meses, columnas = departamentos
+        self.tabla = [[0 for _ in DEPARTAMENTOS] for _ in MESES]
+
+    # ---------- Utilidades internas ----------
+    def _indice_mes(self, mes):
+        mes = mes.strip().lower()
+        for i, m in enumerate(MESES):
+            if m.lower() == mes:
+                return i
+        return -1
+
+    def _indice_departamento(self, depto):
+        depto = depto.strip().lower()
+        for i, d in enumerate(DEPARTAMENTOS):
+            if d.lower() == depto:
+                return i
+        return -1
+
+    # ---------- Métodos principales ----------
+    def insertar_venta(self, mes, departamento, monto):
+        fila = self._indice_mes(mes)
+        col = self._indice_departamento(departamento)
+        if fila == -1 or col == -1:
+            print("❌ Mes o departamento no válido.")
+            return
+        self.tabla[fila][col] = monto
+        print(f"✅ Venta registrada: {MESES[fila]} - {DEPARTAMENTOS[col]} = {monto}")
+
+    def buscar_venta(self, mes, departamento):
+        fila = self._indice_mes(mes)
+        col = self._indice_departamento(departamento)
+        if fila == -1 or col == -1:
+            print("❌ Mes o departamento no válido.")
+            return None
+        valor = self.tabla[fila][col]
+        print(f"🔎 Venta de {DEPARTAMENTOS[col]} en {MESES[fila]}: {valor}")
+        return valor
+
+    def eliminar_venta(self, mes, departamento):
+        fila = self._indice_mes(mes)
+        col = self._indice_departamento(departamento)
+        if fila == -1 or col == -1:
+            print("❌ Mes o departamento no válido.")
+            return
+        self.tabla[fila][col] = 0
+        print(f"🗑️  Venta eliminada: {MESES[fila]} - {DEPARTAMENTOS[col]} ahora es 0")
+
+    def mostrar_tabla(self):
+        ancho_col = 12
+        # Encabezado
+        encabezado = "Mes".ljust(ancho_col) + "".join(d.ljust(ancho_col) for d in DEPARTAMENTOS)
+        print("\n" + "=" * len(encabezado))
+        print(encabezado)
+        print("-" * len(encabezado))
+        # Filas
+        for i, mes in enumerate(MESES):
+            fila_str = mes.ljust(ancho_col) + "".join(
+                str(self.tabla[i][j]).ljust(ancho_col) for j in range(len(DEPARTAMENTOS))
+            )
+            print(fila_str)
+        print("=" * len(encabezado) + "\n")
+
+
+# ---------------- Menú interactivo ----------------
+def pedir_mes():
+    print("Meses disponibles:", ", ".join(MESES))
+    return input("Ingresa el mes: ")
+
+
+def pedir_departamento():
+    print("Departamentos disponibles:", ", ".join(DEPARTAMENTOS))
+    return input("Ingresa el departamento: ")
+
+
+def menu():
+    sistema = VentasDepartamentos()
+
+    while True:
+        print("\n--- MENÚ DE VENTAS ---")
+        print("1. Agregar/actualizar venta")
+        print("2. Buscar venta")
+        print("3. Eliminar venta")
+        print("4. Mostrar tabla completa")
+        print("5. Salir")
+        opcion = input("Elige una opción (1-5): ").strip()
+
+        if opcion == "1":
+            mes = pedir_mes()
+            depto = pedir_departamento()
+            try:
+                monto = float(input("Ingresa el monto de la venta: "))
+            except ValueError:
+                print("❌ Monto inválido.")
+                continue
+            sistema.insertar_venta(mes, depto, monto)
+
+        elif opcion == "2":
+            mes = pedir_mes()
+            depto = pedir_departamento()
+            sistema.buscar_venta(mes, depto)
+
+        elif opcion == "3":
+            mes = pedir_mes()
+            depto = pedir_departamento()
+            sistema.eliminar_venta(mes, depto)
+
+        elif opcion == "4":
+            sistema.mostrar_tabla()
+
+        elif opcion == "5":
+            print("👋 ¡Hasta luego!")
+            break
+
+        else:
+            print("❌ Opción no válida, intenta de nuevo.")
+
+
+if __name__ == "__main__":
+    menu()
