@@ -1,0 +1,19 @@
+def fibonacci_emojis(generaciones):
+    if generaciones <= 0:
+        return
+    
+    # Cantidad inicial de parejas: 0 y 1
+    a, b = 0, 1
+    
+    print("--- EVOLUCIÓN DE LA POBLACIÓN ---")
+    
+    for gen in range(1, generaciones + 1):
+        # Representamos la cantidad usando emojis en lugar de números
+        parejas_visuales = "🐇 " * a if a > 0 else "❌ (Sin población)"
+        print(f"Generación {gen}: {parejas_visuales}")
+        
+        # Cálculo del siguiente término
+        a, b = b, a + b
+
+# --- Ejecución para la clase ---
+fibonacci_emojis(7)
